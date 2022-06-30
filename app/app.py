@@ -22,7 +22,11 @@ db_logger = logging.getLogger('sqlalchemy')
 db_logger.addHandler(db_handler)
 db_logger.setLevel(db_logger_log_level)
 
-db_string = 'postgresql://{}:{}@{}:{}/{}'.format(db_user, db_pass, db_host, db_port, db_name)
+db_string = 'postgresql://{}:{}@{}:{}/{}'.format(db_user,
+                                                 db_pass,
+                                                 db_host,
+                                                 db_port,
+                                                 db_name)
 engine = create_engine(db_string)
 Base = declarative_base()
 
@@ -77,29 +81,33 @@ def post_data(chemical_compounds):
         def __str__(self):
             return self.compound
 
-
     Base.metadata.create_all(engine)
 
-    with Session() as session:
-        for comp in chemical_compounds:
-            result = pull_data(comp)
-            name = result[comp][0]['name']
-            compound = list(result.keys())[0]
-            formula = result[comp][0]['formula']
-            inchi = result[comp][0]['inchi']
-            inchi_key = result[comp][0]['inchi_key']
-            smiles = result[comp][0]['smiles']
-            cross_links_count = len(result[comp][0]['cross_links'])
-            session.add(Compound(
-                name=name,
-                compound=compound,
-                formula=formula,
-                inchi=inchi,
-                inchi_key=inchi_key,
-                smiles=smiles,
-                cross_links_count=cross_links_count
-            ))
-        session.commit()
+    try:
+        with Session() as session:
+            for comp in chemical_compounds:
+                result = pull_data(comp)
+                name = result[comp][0]['name']
+                compound = list(result.keys())[0]
+                formula = result[comp][0]['formula']
+                inchi = result[comp][0]['inchi']
+                inchi_key = result[comp][0]['inchi_key']
+                smiles = result[comp][0]['smiles']
+                cross_links_count = len(result[comp][0]['cross_links'])
+                session.add(Compound(
+                    name=name,
+                    compound=compound,
+                    formula=formula,
+                    inchi=inchi,
+                    inchi_key=inchi_key,
+                    smiles=smiles,
+                    cross_links_count=cross_links_count
+                ))
+            session.commit()
+    except KeyError as e:
+        print(e)
+    except requests.exceptions.JSONDecodeError as e:
+        print(e)
 
 
 def print_table(table_name):
@@ -115,10 +123,15 @@ def print_table(table_name):
     table_name : str
         Name of PostgreSQL table.
     '''
-    df = pd.read_sql_table(table_name=table_name, con=engine)
-    df.iloc[:, 1:7] = df.iloc[:, 1:7].astype(str).applymap(lambda x : x if len(x) < 13 else x[:10] + '...')
-    pd.set_option('display.expand_frame_repr', False)
-    print(df.to_string(index=False))
+    try:
+        df = pd.read_sql_table(table_name=table_name, con=engine)
+    except ValueError as e:
+        print(e)
+    else:
+        df.iloc[:, 1:7] = (df.iloc[:, 1:7].astype(str).
+                           applymap(lambda x: x if len(x) < 13 else x[:10] + '...'))
+        pd.set_option('display.expand_frame_repr', False)
+        print(df.to_string(index=False))
 
 
 if __name__ == "__main__":

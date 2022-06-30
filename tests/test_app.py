@@ -25,7 +25,7 @@ class TestRequests(unittest.TestCase):
 
     def test_correct_input(self):
         """
-        Test when correct compound name is concatenated to the base URL, 
+        Test when correct compound name is concatenated to the base URL,
         JSON in populated appropriately.
         """
         result = pull_data("ATP")
