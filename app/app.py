@@ -1,17 +1,21 @@
 import logging
+import os
 
 import pandas as pd
 import requests
+from dotenv import load_dotenv
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-db_name = 'postgres'
-db_user = 'postgres'
-db_pass = 'postgrespw'
-db_host = 'host.docker.internal'
-db_port = '49154'
+load_dotenv()
 
-db_log_file_name = 'logs.txt'
+db_name = os.getenv('DB_NAME')
+db_user = os.getenv('DB_USER')
+db_pass = os.getenv('DB_PASS')
+db_host = os.getenv('DB_HOST')
+db_port = os.getenv('DB_PORT')
+
+db_log_file_name = 'console.log'
 db_handler_log_level = logging.INFO
 db_logger_log_level = logging.DEBUG
 
@@ -80,6 +84,7 @@ def post_data(chemical_compounds):
 
         def __str__(self):
             return self.compound
+
 
     Base.metadata.create_all(engine)
 
