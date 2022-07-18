@@ -1,6 +1,9 @@
 FROM python:latest
-WORKDIR /code
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+RUN mkdir usr/src/app
+WORKDIR /usr/src/app
 ADD requirements.txt requirements.txt
 RUN pip install -r requirements.txt
-COPY app.py app.py
-CMD ["python", "-u", "app.py"]
+ADD . /usr/src/app
+CMD ["python", "app.py"]
