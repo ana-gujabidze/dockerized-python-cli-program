@@ -6,15 +6,14 @@ import requests
 from dotenv import load_dotenv
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.sql import exists
 
-load_dotenv()
+from storage import database, models
 
-db_name = os.getenv('DB_NAME')
-db_user = os.getenv('DB_USER')
-db_pass = os.getenv('DB_PASS')
-db_host = os.getenv('DB_HOST')
-db_port = os.getenv('DB_PORT')
+BASE_URL = "https://www.ebi.ac.uk/pdbe/graph-api/compound/summary/"
+CHEMICAL_COMPOUNDS = ['ADP', 'ATP', 'STI', 'ZID', 'DPM', 'XP9', '18W', '29P']
 
+# Start of logging
 db_log_file_name = 'console.log'
 db_handler_log_level = logging.INFO
 db_logger_log_level = logging.DEBUG
@@ -25,19 +24,7 @@ db_handler.setLevel(db_handler_log_level)
 db_logger = logging.getLogger('sqlalchemy')
 db_logger.addHandler(db_handler)
 db_logger.setLevel(db_logger_log_level)
-
-db_string = 'postgresql://{}:{}@{}:{}/{}'.format(db_user,
-                                                 db_pass,
-                                                 db_host,
-                                                 db_port,
-                                                 db_name)
-engine = create_engine(db_string)
-Base = declarative_base()
-
-Session = sessionmaker(bind=engine)
-
-base_url = "https://www.ebi.ac.uk/pdbe/graph-api/compound/summary/"
-chemical_compounds = ['ADP', 'ATP', 'STI', 'ZID', 'DPM', 'XP9', '18W', '29P']
+# End of logging
 
 
 def pull_data(comp):
@@ -53,7 +40,7 @@ def pull_data(comp):
         Single compound.
     '''
 
-    response = requests.get(base_url + comp)
+    response = requests.get(BASE_URL + comp)
     result = response.json()
     return result
 
@@ -71,43 +58,30 @@ def post_data(chemical_compounds):
         Multiple compounds.
     '''
 
-    class Compound(Base):
-        __tablename__ = "compounds"
-        id = Column(Integer, primary_key=True)
-        name = Column(String())
-        compound = Column(String())
-        formula = Column(String())
-        inchi = Column(String())
-        inchi_key = Column(String())
-        smiles = Column(String())
-        cross_links_count = Column(Integer)
-
-        def __str__(self):
-            return self.compound
-
-
-    Base.metadata.create_all(engine)
+    database.Base.metadata.create_all(database.engine)
 
     try:
-        with Session() as session:
+        with database.Session() as session:
             for comp in chemical_compounds:
-                result = pull_data(comp)
-                name = result[comp][0]['name']
-                compound = list(result.keys())[0]
-                formula = result[comp][0]['formula']
-                inchi = result[comp][0]['inchi']
-                inchi_key = result[comp][0]['inchi_key']
-                smiles = result[comp][0]['smiles']
-                cross_links_count = len(result[comp][0]['cross_links'])
-                session.add(Compound(
-                    name=name,
-                    compound=compound,
-                    formula=formula,
-                    inchi=inchi,
-                    inchi_key=inchi_key,
-                    smiles=smiles,
-                    cross_links_count=cross_links_count
-                ))
+                comp_exists = bool(session.query(exists().where(models.Compound.compound == comp)).scalar())
+                if not comp_exists:
+                    result = pull_data(comp)
+                    name = result[comp][0]['name']
+                    compound = list(result.keys())[0]
+                    formula = result[comp][0]['formula']
+                    inchi = result[comp][0]['inchi']
+                    inchi_key = result[comp][0]['inchi_key']
+                    smiles = result[comp][0]['smiles']
+                    cross_links_count = len(result[comp][0]['cross_links'])
+                    session.add(models.Compound(
+                        name=name,
+                        compound=compound,
+                        formula=formula,
+                        inchi=inchi,
+                        inchi_key=inchi_key,
+                        smiles=smiles,
+                        cross_links_count=cross_links_count
+                    ))
             session.commit()
     except KeyError as e:
         print(e)
@@ -129,7 +103,7 @@ def print_table(table_name):
         Name of PostgreSQL table.
     '''
     try:
-        df = pd.read_sql_table(table_name=table_name, con=engine)
+        df = pd.read_sql_table(table_name=table_name, con=database.engine)
     except ValueError as e:
         print(e)
     else:
@@ -140,5 +114,5 @@ def print_table(table_name):
 
 
 if __name__ == "__main__":
-    post_data(chemical_compounds)
+    post_data(CHEMICAL_COMPOUNDS)
     print_table("compounds")
