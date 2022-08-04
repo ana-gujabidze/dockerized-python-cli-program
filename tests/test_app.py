@@ -43,7 +43,7 @@ class TestRequests(unittest.TestCase):
         self.assertEqual("InChI=1S/C10H16N5O13P3/c11-8-5-9(13-2-12-8)15(3-14-5)10-7(17)6(16)4(26-10)1-25-30(21,22)28-31(23,24)27-29(18,19)20/h2-4,6-7,10,16-17H,1H2,(H,21,22)(H,23,24)(H2,11,12,13)(H2,18,19,20)/t4-,6-,7-,10-/m1/s1", inchi)
         self.assertEqual("ZKHQWZAMYRWXGA-KQYNXXCUSA-N", inchi_key)
         self.assertEqual("c1nc(c2c(n1)n(cn2)C3C(C(C(O3)COP(=O)(O)OP(=O)(O)OP(=O)(O)O)O)O)N", smiles)
-        self.assertEqual(22, cross_links_count)
+        self.assertEqual(23, cross_links_count)
 
 
 if __name__ == '__main__':
