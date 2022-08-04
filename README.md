@@ -1,15 +1,102 @@
-# PyForge3 Final Project
-## Dockerized Python Command-Line Program
+# Dockerized Python Command-Line Program
+
+## Common Usage
+Python command-line tool allows to:
+- download chemical compound information from API ebi-ac-uk
+- view downloaded data as as a table in command line
+
+---
+## Prerequsites
+- Python 3.9.x
+- Python Virtual Environment (preferable)
+- Git
+- Docker
+- Docker compose
+---
+## Common setup
+Clone the repo and install the dependencies.
+```
+git clone https://github.com/pyforge3-final-project-anag.git
+cd pyforge3-final-project-anag/
+```
+
 Download Docker Desktop from [the official website](https://docs.docker.com/desktop/). It will automatically install docker compose for you.
 
 Navigate to Docker Desktop, there on Homepage there is [PostgreSQL docker official image](https://hub.docker.com/_/postgres).
 Start running the official docker image.
 You can check that it is working correct from CLI by following instructions provided in the container **PostgreSQL Overview**. 
 
-In my code Port is hardcoded in variable `db_port`, which will require to be changed since it rotates after starting postgres:latest container anew.
+The app is connected to PostgreSQL database so in order to run this app first connect to database. After connecting to database, create `.env` file similar to `.env_sample` file and specify all environmental variables.
 
-After starting postgres:latest container successfully, python image can be created. Navigate to the app directory and from there run command `docker build -t python-app-1 .`. After successful build, run the image by the command `docker run -it python-app-1`.
+### Run application locally
 
-After running python app image, in CLI content of PostgreSQL table content should be printed out.
+If virtual environment is available run the following command
 
-Another option to build the docker image and run it is by using this command `docker compose up` in the directory where docker compose file is located. After finishig tasks, the container can be switched off by running this command `docker compose down`.
+```
+python3 -m pip install -r requirements.txt
+```
+
+else:
+```
+pip3 install -r requirements.txt
+```
+
+After starting postgres:latest container successfully, application can be run locally. 
+
+Navigate to the app directory and from there run command
+```
+cd app
+python3 app.py
+```
+
+Result should be the following:
+![executed_test_cases](__screenshots\local_run.png?raw=true "Title")
+
+### Build Images and Run Containers With Docker Client
+
+After starting postgres:latest container successfully, python image can be created. 
+
+Navigate to the app directory and from there run command in order to build the image
+```
+docker build -t python-app-1 .
+```
+After successful build, run the container by the command
+```
+docker run -it python-app-1
+```
+
+After running python app image, in CLI content of PostgreSQL table content should be printed out:
+![executed_test_cases](__screenshots\docker_client_result.png?raw=true "Title")
+
+### Run Containers With Docker Compose
+
+Another option to run docker container it is by using this command 
+```
+docker compose up
+``` 
+in the directory where docker compose file is located.
+
+After finishig tasks, the container can be switched off by running this command 
+```
+docker compose down
+```
+
+Result should be the following:
+
+![executed_test_cases](__screenshots\docker_compose_result.png?raw=true "Title")
+---
+## Testing
+Run tests in the command line by following command
+```
+python3 -m unittest
+```
+In the command line following result should be present:
+
+![executed_test_cases](__screenshots\executed_test_cases.png?raw=true "Title")
+---
+## Logging
+
+For troubleshooting and debugging purposes logs are preserved in `console.log` file, which is created automatically upon running the application, be that locally or in container.
+
+The beginning of the file looks like this:
+![console_log](__screenshots\console_log.png?raw=true "Title")
