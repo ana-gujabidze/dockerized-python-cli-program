@@ -66,7 +66,7 @@ docker run -it python-app-1
 ```
 
 After running python app image, in CLI content of PostgreSQL table content should be printed out:
-![executed_test_cases](__screenshots\docker_client_result.png?raw=true "Title")
+![executed_test_cases](__screenshots/docker_client_result.png?raw=true "Title")
 
 ### Run Containers With Docker Compose
 
