@@ -43,10 +43,9 @@ pip3 install -r requirements.txt
 
 After starting postgres:latest container successfully, application can be run locally. 
 
-Navigate to the app directory and from there run command
+Navigate to the root directory and from there run command
 ```
-cd app
-python3 app.py
+python3 src/app.py
 ```
 
 Result should be the following:
@@ -56,8 +55,9 @@ Result should be the following:
 
 After starting postgres:latest container successfully, python image can be created. 
 
-Navigate to the app directory and from there run command in order to build the image
+Navigate to the source directory and from there run command in order to build the image
 ```
+cd src
 docker build -t python-app-1 .
 ```
 After successful build, run the container by the command
@@ -70,8 +70,9 @@ After running python app image, in CLI content of PostgreSQL table content shoul
 
 ### Run Containers With Docker Compose
 
-Another option to run docker container it is by using this command 
+Another option to run docker container it is by using this command after moving back to the root directroy
 ```
+cd ..
 docker compose up
 ``` 
 in the directory where docker compose file is located.
