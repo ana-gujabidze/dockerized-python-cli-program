@@ -88,7 +88,7 @@ Result should be the following:
 ## Testing
 Run tests in the command line by following command
 ```
-python3 -m unittest
+python -m unittest discover -s tests
 ```
 In the command line following result should be present:
 
