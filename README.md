@@ -50,7 +50,7 @@ python3 app.py
 ```
 
 Result should be the following:
-![executed_test_cases](__screenshots\local_run.png?raw=true "Title")
+![executed_test_cases](__screenshots/local_run.png?raw=true "Title")
 
 ### Build Images and Run Containers With Docker Client
 
@@ -83,7 +83,7 @@ docker compose down
 
 Result should be the following:
 
-![executed_test_cases](__screenshots\docker_compose_result.png?raw=true "Title")
+![executed_test_cases](__screenshots/docker_compose_result.png?raw=true "Title")
 ---
 ## Testing
 Run tests in the command line by following command
@@ -92,11 +92,11 @@ python -m unittest discover -s tests
 ```
 In the command line following result should be present:
 
-![executed_test_cases](__screenshots\executed_test_cases.png?raw=true "Title")
+![executed_test_cases](__screenshots/executed_test_cases.png?raw=true "Title")
 ---
 ## Logging
 
 For troubleshooting and debugging purposes logs are preserved in `console.log` file, which is created automatically upon running the application, be that locally or in container.
 
 The beginning of the file looks like this:
-![console_log](__screenshots\console_log.png?raw=true "Title")
+![console_log](__screenshots/console_log.png?raw=true "Title")
