@@ -1,11 +1,11 @@
 import sys
 
-sys.path.append('app/src/')
+sys.path.append('src/')
 
 import unittest
 
-from app.src import app
 from requests.exceptions import JSONDecodeError
+from src import app
 
 base_url = "https://www.ebi.ac.uk/pdbe/graph-api/compound/summary/"
 

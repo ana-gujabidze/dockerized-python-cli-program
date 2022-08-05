@@ -63,7 +63,7 @@ def post_data(chemical_compounds):
     try:
         with database.Session() as session:
             for comp in chemical_compounds:
-                comp_exists = bool(session.query(exists().where(models.Compound.compound == comp)).scalar())
+                comp_exists = session.query(exists().where(models.Compound.compound == comp)).scalar()
                 if not comp_exists:
                     result = pull_data(comp)
                     name = result[comp][0]['name']
