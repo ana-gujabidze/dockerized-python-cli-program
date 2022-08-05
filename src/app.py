@@ -1,5 +1,6 @@
 import logging
 import os
+from time import sleep
 
 import pandas as pd
 import requests
@@ -27,12 +28,24 @@ db_logger.setLevel(db_logger_log_level)
 # End of logging
 
 
+def delay_time(func):
+    """
+    Decorator for delaying time for 1 second.
+    """
+    def wrapper(*args, **kwargs):
+        sleep(1)
+        return func(*args, **kwargs)
+    return wrapper
+
+
+@delay_time
 def pull_data(comp):
     '''
     Get data out of API ebi-ac-uk.
 
     This function simply gets data about compound from API ebi-ac-uk
     and returns data in JSON format.
+    It gets delayed 1 second each time it is called.
 
     Parameters
     ----------
@@ -40,8 +53,8 @@ def pull_data(comp):
         Single compound.
     '''
 
-    response = requests.get(BASE_URL + comp)
-    result = response.json()
+    request = requests.get(BASE_URL + comp)
+    result = request.json()
     return result
 
 
