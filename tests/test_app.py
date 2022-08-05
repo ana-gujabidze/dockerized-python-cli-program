@@ -1,6 +1,10 @@
+import sys
+
+sys.path.append('app/src/')
+
 import unittest
 
-from app.app import pull_data
+from app.src import app
 from requests.exceptions import JSONDecodeError
 
 base_url = "https://www.ebi.ac.uk/pdbe/graph-api/compound/summary/"
@@ -13,14 +17,14 @@ class TestRequests(unittest.TestCase):
         Test when nothing is concatenated to the base URL,
         exception is raised.
         """
-        self.assertRaises(JSONDecodeError, pull_data, '')
+        self.assertRaises(JSONDecodeError, app.pull_data, '')
 
     def test_wrong_input(self):
         """T
         est when wrong compound name is concatenated to the base URL,
         empty JSON is returned.
         """
-        result = pull_data('aTP')
+        result = app.pull_data('aTP')
         self.assertEqual({}, result)
 
     def test_correct_input(self):
@@ -28,7 +32,7 @@ class TestRequests(unittest.TestCase):
         Test when correct compound name is concatenated to the base URL,
         JSON in populated appropriately.
         """
-        result = pull_data("ATP")
+        result = app.pull_data("ATP")
         name = result["ATP"][0]['name']
         compound = list(result.keys())[0]
         formula = result["ATP"][0]['formula']
