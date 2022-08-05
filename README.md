@@ -16,8 +16,8 @@ Python command-line tool allows to:
 ## Common setup
 Clone the repo and install the dependencies.
 ```
-git clone https://github.com/pyforge3-final-project-anag.git
-cd pyforge3-final-project-anag/
+git clone https://github.com/ana-gujabidze/dockerized-python-cli-program.git
+cd dockerized-python-cli-program/
 ```
 
 Download Docker Desktop from [the official website](https://docs.docker.com/desktop/). It will automatically install docker compose for you.
